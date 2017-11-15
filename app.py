@@ -48,7 +48,7 @@ def delete_pet(pet_id):
 
 
 if __name__ == '__main__':
-    app = connexion.FlaskApp(__name__)
-    # app = connexion.AioHttpApp(__name__)
+    # app = connexion.FlaskApp(__name__)
+    app = connexion.AioHttpApp(__name__)
     app.add_api('swagger.yaml', base_path='/')
     app.run(port=8080)

@@ -4,9 +4,12 @@ import logging
 import datetime
 import asyncio
 import aiohttp.web
-
+import pytest
+import pytest_aiohttp
 from connexion import NoContent
 
+
+# logging.basicConfig(level=logging.INFO)
 
 # our memory-only pet storage
 PETS = {}
@@ -50,8 +53,29 @@ def delete_pet(pet_id):
         return aiohttp.web.json_response(data='', status=404)
 
 
-if __name__ == '__main__':
-    # app = connexion.FlaskApp(__name__)
+@asyncio.coroutine
+def test_connexion(test_client):
     app = connexion.AioHttpApp(__name__)
     app.add_api('swagger.yaml', base_path='/api')
-    app.run(port=8080)
+    aiohttp_app = app.app
+    client = yield from test_client(aiohttp_app)
+
+    routes = aiohttp_app.router.routes()
+
+    resp = yield from client.get('/1')
+    assert resp.status == 404
+
+    resp = yield from client.get('/api/pets')
+    json_data = yield from resp.json()
+    assert json_data == []
+
+    pet = {"id": 1, "name": "Tosi", "animal_type": "cat"}
+    resp = yield from client.put('/api/pets/1', json=pet)
+
+
+if __name__ == '__main__':
+    pass
+    # app = connexion.FlaskApp(__name__)
+    # app = connexion.AioHttpApp(__name__)
+    # app.add_api('swagger.yaml', base_path='/api')
+    # app.run(port=8080)

@@ -80,9 +80,9 @@ parameters:
     name: pet_id
     description: Pet's Unique identifier
     in: path
-    type: string
+    type: integer
     required: true
-    pattern: "^[a-zA-Z0-9-]+$"
+    pattern: "^[0-9]+$"
 
 definitions:
   Pet:
@@ -92,7 +92,7 @@ definitions:
       - animal_type
     properties:
       id:
-        type: string
+        type: integer
         description: Unique identifier
         example: "123"
         readOnly: true
